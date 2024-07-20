@@ -1,51 +1,48 @@
 <template>
-  <NavBar />
-  <Event :text="text"/>
-<h1>영화정보</h1>
-<div v-for="(movie, i ) in data" :key="i" class="item">
-  <figure>
-    <img :src="`${movie.imgUrl}`" :alt="movie.title">
-  </figure>
+  <Navbar />
+  <Event :text="text" />
+  <Movies
+      :data="data"
+      @openModal="isModal=true;selectedMovie=$event"
+      @increaseLike="increseLike($event)"
+  />
+  <Modal
+      :data="data"
+      :isModal="isModal"
+      :selectedMovie="selectedMovie"
+      @closeModal="isModal=false"
+  />
 
-  <div class="info">
-    <h3 class="bg-yellow">{{ movie.title }}</h3>
-    <p>{{ movie.year }}</p>
-    <p>{{ movie.category }}</p>
-    <button @click="increaseLike(i)">좋아요</button> <span> {{ movie.like }}</span>
-    <p>
-      <button @click="isModal=true; selectedMovie=i">상세정보</button>
-    </p>
-  </div>
-
-  <Modal />
-</div>
 </template>
 
 <script>
-import { data } from './assets/movies'
-import NavBar from "@/components/NavBar.vue";
-import Modal from "@/components/Modal.vue";
-import Event from "@/components/Event.vue";
+import data from './assets/movies'; // 영화 데이터
+import Navbar from './components/Navbar.vue';
+import Event from './components/Event.vue'; // 이벤트 박스
+import Modal from './components/Modal.vue';
+import Movies from './components/Movies.vue';
+console.log(data);
 
 export default {
   name: 'App',
   data() {
     return {
       isModal: false,
-      data,
+      data: data,
       selectedMovie: 0,
-      text: 'NETPLIX 강렬한 운명의 드라마, 경기크리처'
+      text: "NETPLIX 강렬한 운명의 드라마, 경기크리처"
     }
   },
   methods: {
-    increaseLike(index) {
-      this.data[index].like += 1;
+    increseLike(i) {
+      this.data[i].like += 1;
     }
   },
   components: {
-    NavBar,
+    Navbar,
+    Event,
     Modal,
-    Event
+    Movies,
   }
 }
 </script>
@@ -114,9 +111,5 @@ button {
   width: 80%;
   padding: 20px;
   border-radius: 10px;
-}
-
-p:has(.btn-all) {
-  text-align: center;
 }
 </style>
