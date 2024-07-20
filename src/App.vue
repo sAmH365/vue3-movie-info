@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <Event :text="text" />
+  <Event :text="text[eventTextNum]" />
   <SearchBar :data="data_tmp" @searchMovie="searchMovie($event)"/>
   <p>
     <button @click="showAllMovie">전체보기</button>
@@ -35,12 +35,23 @@ export default {
       data,
       data_tmp: [...data], // 사본
       selectedMovie: 0,
-      text: "NETPLIX 강렬한 운명의 드라마, 경기크리처"
+      text: [
+          'NETPLIX 강렬한 운명의 드라마, 경기크리처',
+          '디즈니 100주념 기념작, 위시',
+          '그날, 대한민국의 운명이 바뀌었다, 서울의 봄'
+      ],
+      eventTextNum: 0,
+      interval: null
     }
   },
   methods: {
     increseLike(i) {
-      this.data[i].like += 1;
+      // this.data[i].like += 1;
+      this.data.find(movie => {
+        if (movie.id === i) {
+          movie.like += 1;
+        }
+      })
     },
     searchMovie(title) {
       // 영화제목이 포함된 데이터를 가져옴
@@ -58,7 +69,17 @@ export default {
     Modal,
     Movies,
     SearchBar
+  },
+  mounted() {
+    this.interval = setInterval(()=> {
+      if (this.eventTextNum === this.text.length - 1) this.eventTextNum = 0;
+      this.eventTextNum +=1;
+    }, 3000);
+  },
+  unmounted() {
+    clearInterval(this.interval);
   }
+
 }
 </script>
 
