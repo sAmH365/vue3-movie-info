@@ -1,14 +1,17 @@
 <template>
   <Navbar />
   <Event :text="text" />
-  <SearchBar />
+  <SearchBar :data="data_tmp" @searchMovie="searchMovie($event)"/>
+  <p>
+    <button @click="showAllMovie">전체보기</button>
+  </p>
   <Movies
-      :data="data"
+      :data="data_tmp"
       @openModal="isModal=true;selectedMovie=$event"
       @increaseLike="increseLike($event)"
   />
   <Modal
-      :data="data"
+      :data="data_tmp"
       :isModal="isModal"
       :selectedMovie="selectedMovie"
       @closeModal="isModal=false"
@@ -29,7 +32,8 @@ export default {
   data() {
     return {
       isModal: false,
-      data: data,
+      data,
+      data_tmp: [...data], // 사본
       selectedMovie: 0,
       text: "NETPLIX 강렬한 운명의 드라마, 경기크리처"
     }
@@ -37,6 +41,15 @@ export default {
   methods: {
     increseLike(i) {
       this.data[i].like += 1;
+    },
+    searchMovie(title) {
+      // 영화제목이 포함된 데이터를 가져옴
+      this.data_tmp = this.data.filter(movie => {
+        return movie.title.includes(title);
+      })
+    },
+    showAllMovie() {
+      this.data_tmp = this.data;
     }
   },
   components: {

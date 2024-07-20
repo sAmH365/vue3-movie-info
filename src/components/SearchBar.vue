@@ -1,9 +1,13 @@
 <template>
   <div class="search-box">
-    <input type="search" v-model="inputText" placeholder="검색어 입력">
+    <input type="search"
+           @change="
+           $emit('searchMovie', $event.target.value)
+           inputText = $event.target.value;
+           $event.target.value=''"
+           placeholder="검색어 입력">
     <button>검색</button>
   </div>
-  <p>{{ inputText }}</p>
 </template>
 
 <script>
@@ -12,6 +16,22 @@ export default {
   data() {
     return {
       inputText: ''
+    }
+  },
+  props: {
+    data: Array
+  },
+  watch: {
+    inputText(name) {
+      // watch 매개변수 -> 첫번째: 확인하고싶은 변수 :: 두번째: 이전값
+      // 입력한 영화제목이 데이터에 있는지 확인
+      const findName = this.data.filter(movie => {
+        return movie.title.includes(name);
+      })
+
+      if (findName.length === 0) {
+        alert('해당하는 자료가 없습니다.')
+      }
     }
   }
 }
